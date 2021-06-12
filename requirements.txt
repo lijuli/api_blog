@@ -26,3 +26,8 @@ sqlparse==0.3.1           # via django
 urllib3==1.25.9           # via requests
 wcwidth==0.1.9            # via pytest
 zipp==3.1.0               # via importlib-metadata
+
+# A supplement from Eugene
+djangorestframework-simplejwt==4.7.1
+django-filter==2.4.0
+isort==5.8.0 # for sorting imports alphabetically, and automatically separated into sections and by type
