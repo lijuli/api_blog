@@ -49,16 +49,3 @@ class Title(models.Model):
         shorten_comment_text = shorten(self.name, width=10, placeholder='...')
         return f'[{self.created}] {self.year}: {shorten_comment_text}'
 
-    # - id: skip in model
-    # - name: CharField
-    # - year: IntegerField
-    # - rating: choice??
-    # - description: TextField
-    #
-    # - genre: ForeignKey
-    # name: str
-    # slug: str
-    #
-    # - category: ForeignKey
-    # name: str
-    # slug: str
