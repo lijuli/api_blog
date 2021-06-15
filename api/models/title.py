@@ -43,7 +43,7 @@ class Title(models.Model):
     class Meta:
         app_label = 'api'
         verbose_name = 'titles'
-        ordering = ('-created',)
+        ordering = ('-rating',)
 
     def __str__(self):
         shorten_comment_text = shorten(self.name, width=10, placeholder='...')
