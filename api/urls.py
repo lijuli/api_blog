@@ -3,8 +3,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .views import APIUser, CustomUserViewSet, RegisterView, TokenView, MyTokenObtainPairView
-
 
 router_v1 = DefaultRouter()
 
