@@ -22,8 +22,8 @@ class CustomUserManager(BaseUserManager):
             password=password,
             **kwargs
         )
-        user.is_staff = True
         user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -69,4 +69,3 @@ class CustomUser(AbstractUser):
     @property
     def is_staff(self):
         return self.role == self.Roles.MODERATOR
-
