@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view
+
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
@@ -63,14 +64,14 @@ class RegisterView(APIView):
         return Response({'email': email, 'confirmation_code': confirmation_code})
 
 
-# class TokenView(APIView):
-#     permission_classes = (AllowAny,)
+class TokenView(APIView):
+    permission_classes = (AllowAny,)
 
-#     def post(self, request):
-#         user = get_object_or_404(CustomUser, email=request.data.get('email'))
-#         if user.confirmation_code != request.data.get('confirmation_code'):
-#             response = {'confirmation_code': 'Неправльный код'}
-#             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-#         token = AccessToken.for_user(user)
-#         response = {'token': {token}}
-#         return Response(response, status=status.HTTP_200_OK)
+    def post(self, request):
+        user = get_object_or_404(CustomUser, email=request.data.get('email'))
+        if user.confirmation_code != request.data.get('confirmation_code'):
+            response = {'confirmation_code': 'Неправльный код'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        token = AccessToken.for_user(user)
+        response = {'token': {token}}
+        return Response(response, status=status.HTTP_200_OK)
