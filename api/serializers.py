@@ -4,7 +4,7 @@ from api.models.title import Title
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(max_length=500)
+    name = serializers.CharField(max_length=500)
 
     class Meta:
         fields = '__all__'
