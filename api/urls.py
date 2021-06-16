@@ -12,12 +12,12 @@ router_v1.register('titles', TitleViewSet, basename='title_api')
 # router_v1.register(r'v1/titles/(?P<title_id>[0-9]+)/reviews',
 #                    ReviewViewSet,
 #                    basename='review_api')
-router_v1.register(r'categories', CategoryViewSet, basename='category_api')
-router_v1.register(r'genres', GenreViewSet, basename='genre_api')
-router_v1.register('v1/users', CustomUserViewSet, basename='user_api')
+router_v1.register('categories', CategoryViewSet, basename='category_api')
+router_v1.register('genres', GenreViewSet, basename='genre_api')
+router_v1.register('users', CustomUserViewSet, basename='user_api')
 
 urlpatterns = [
-    path('v1', include(router_v1.urls)),
+    path('v1/', include(router_v1.urls)),
     path('v1/users/me/', APIUser.as_view(), name='about'),
     path('v1/auth/email/', RegisterView.as_view(), name='registration'),
     path('v1/auth/token/', TokenView.as_view(), name='token'),
