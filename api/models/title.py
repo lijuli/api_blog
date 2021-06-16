@@ -30,11 +30,9 @@ class Title(models.Model):
         verbose_name='category',
         help_text='select a category'
     )
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
         Genre,
-        models.SET_NULL,
         blank=True,
-        null=True,
         related_name='titles',
         verbose_name='genre',
         help_text='select a genre'

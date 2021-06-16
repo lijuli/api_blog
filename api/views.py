@@ -44,7 +44,6 @@ class GenreViewSet(CustomViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    # queryset = Title.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
 
