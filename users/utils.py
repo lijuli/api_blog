@@ -1,6 +1,8 @@
 import random
 import string
 from django.core.mail import send_mail
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 def get_random_code(length):
     letters = string.ascii_lowercase
@@ -16,3 +18,12 @@ def send_mail_to_user(email, confirmation_code):
         recipient_list=[email],
         fail_silently=False,
     )
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }

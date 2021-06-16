@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import exceptions, serializers
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, UntypedToken
-
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +21,7 @@ class SafeCustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
 
 
-class TokenObtainSerializer(serializers.Serializer):
+class MyTokenObtainSerializer(serializers.Serializer):
     username_field = get_user_model().USERNAME_FIELD
 
     default_error_messages = {
@@ -32,12 +32,13 @@ class TokenObtainSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
 
         self.fields[self.username_field] = serializers.CharField()
-        self.fields['password'] = PasswordField()
+        self.fields[self.confirmation_code] = serializers.CharField()
 
     def validate(self, attrs):
         authenticate_kwargs = {
             self.username_field: attrs[self.username_field],
-            'password': attrs['password'],
+            self.confirmation_code: attrs[self.confirmation_code],
+            'confirmation_code': attrs['confirmation_code']
         }
         try:
             authenticate_kwargs['request'] = self.context['request']
@@ -59,7 +60,7 @@ class TokenObtainSerializer(serializers.Serializer):
         raise NotImplementedError('Must implement `get_token` method for `TokenObtainSerializer` subclasses')
 
 
-class TokenObtainPairSerializer(TokenObtainSerializer):
+class MyTokenObtainPairSerializer(TokenObtainSerializer):
     @classmethod
     def get_token(cls, user):
         return RefreshToken.for_user(user)
@@ -77,17 +78,17 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
 
         return data
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['name'] = user.name
-        return RefreshToken.for_user(user)
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         token['name'] = user.name
+#         return RefreshToken.for_user(user)
     
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
-        data['confirmation_code'] = self.user.confirmation_code
-        return data
+#     def validate(self, attrs):
+#         data = super().validate(attrs)
+#         refresh = self.get_token(self.user)
+#         data['refresh'] = str(refresh)
+#         data['access'] = str(refresh.access_token)
+#         data['confirmation_code'] = self.user.confirmation_code
+#         return data

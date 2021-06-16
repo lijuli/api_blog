@@ -10,12 +10,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from users.models import CustomUser
-from users.utils import get_random_code
+from users.utils import get_random_code, get_tokens_for_user
 
-from .permissions import IsAdmin
-from .serializers import CustomUserSerializer, SafeCustomUserSerializer
+from api.permissions import IsAdmin
+from .serializers import CustomUserSerializer, SafeCustomUserSerializer, MyTokenObtainPairSerializer
 from .utils import send_mail_to_user
-from rest_framework_simplejwt.serializers import MyTokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -51,7 +51,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class RegisterView(APIView):
-    permission_classes = (AllowAny)
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         email = request.data.get('email')
@@ -70,8 +70,21 @@ class TokenView(APIView):
     def post(self, request):
         user = get_object_or_404(CustomUser, email=request.data.get('email'))
         if user.confirmation_code != request.data.get('confirmation_code'):
-            response = {'confirmation_code': 'Неправльный код'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        token = AccessToken.for_user(user)
-        response = {'token': {token}}
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        response = get_tokens_for_user(user)
         return Response(response, status=status.HTTP_200_OK)
+
+
+# class TokenView(APIView):
+#     permission_classes = (AllowAny,)
+
+#     def post(self, request):
+#         user = get_object_or_404(CustomUser, email=request.data.get('email'))
+#         if user.confirmation_code != request.data.get('confirmation_code'):
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+#         refresh = RefreshToken.for_user(user)
+#         response ={'token': str(refresh.access_token),}
+#         return Response(response, status=status.HTTP_200_OK)
+#         # token = AccessToken.for_user(user)
+#         # response = {'token': {token}}
+#         # return Response(response, status=status.HTTP_200_OK)
