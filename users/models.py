@@ -24,7 +24,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
+    def create_superuser(self, email, password, username=None):
         user = self.create_user(
             username=username,
             email=email,
@@ -43,7 +43,7 @@ class CustomUser(AbstractUser):
         ADMIN = 'admin'
 
     username = models.CharField(
-        max_length=20, unique=True, blank=False, null=False
+        max_length=20, unique=False, blank=False, null=False
     )
     bio = models.TextField(
         max_length=1000, null=True, blank=True, verbose_name='Рассказ о себе'
