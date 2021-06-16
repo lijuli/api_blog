@@ -24,9 +24,10 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, username, email, password):
         user = self.create_user(
-            email,
+            username=username,
+            email=email,
             password=password,
         )
         user.staff = True
@@ -58,8 +59,8 @@ class CustomUser(AbstractUser):
     )
     confirmation_code = models.CharField(
         max_length=10,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         default=get_random_code(10),
         verbose_name='Код подтверждения',
     )
