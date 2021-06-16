@@ -19,12 +19,12 @@ class Review(models.Model):
         'review text',
         help_text='enter your review here'
     )
-    # author = models.ForeignKey(
-    #     CustomUser,
-    #     on_delete=models.CASCADE,
-    #     related_name='review',
-    #     verbose_name='author'
-    # )
+    author = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='review',
+        verbose_name='author'
+    )
     score = models.FloatField()
     pub_date = models.DateTimeField(
         'date published',

@@ -47,5 +47,5 @@ class Title(models.Model):
 
     def __str__(self):
         shorten_comment_text = shorten(self.name, width=10, placeholder='...')
-        return f'[{self.created}] {self.year}: {shorten_comment_text}'
+        return f'[{self.category}] {self.year}: {shorten_comment_text}'
 
