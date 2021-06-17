@@ -57,8 +57,7 @@ class RegisterView(APIView):
         email = request.data.get('email')
         check = CustomUser.objects.filter(email=email).exists()
         if not check:
-            confirmation_code = get_random_code(10)
-            CustomUser.objects.create_user(email=email, confirmation_code=confirmation_code)
+            CustomUser.objects.create_user(email=email)
         user = CustomUser.objects.get(email=email)
         confirmation_code = user.confirmation_code
         send_mail_to_user(email, confirmation_code)
