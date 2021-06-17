@@ -5,27 +5,30 @@ from .utils import get_random_code
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **kwargs):
+    def create_user(self, email, username, password, **kwargs):
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
             email=self.normalize_email(email),
+            username=username,
+            password=password,
             **kwargs
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_staffuser(self, email, password):
+    def create_staffuser(self, email, password, username):
         user = self.create_user(
             email,
             password=password,
+            username=username
         )
         user.staff = True
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, username=None):
+    def create_superuser(self, email, password, username):
         user = self.create_user(
             username=username,
             email=email,
@@ -44,7 +47,7 @@ class CustomUser(AbstractUser):
         ADMIN = 'admin'
 
     username = models.CharField(
-        max_length=20, unique=False, blank=False, null=False
+        max_length=20, unique=True, blank=False, null=False
     )
     bio = models.TextField(
         max_length=1000, null=True, blank=True, verbose_name='Рассказ о себе'
@@ -68,8 +71,8 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ('email', 'password')
 
     @property
     def is_admin(self):
@@ -77,4 +80,4 @@ class CustomUser(AbstractUser):
 
     @property
     def is_staff(self):
-        return self.role == self.Roles.MODERATOR
+        return self.role == self.Roles.MODERATORz
