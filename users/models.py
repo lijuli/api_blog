@@ -5,11 +5,12 @@ from .utils import get_random_code
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **kwargs):
+    def create_user(self, email, confirmation_code, password=None):
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
             email=self.normalize_email(email),
+            confirmation_code=confirmation_code
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -61,7 +62,7 @@ class CustomUser(AbstractUser):
         max_length=10,
         null=True,
         blank=True,
-        default=get_random_code(10),
+        default="0123456789",
         verbose_name='Код подтверждения',
     )
 

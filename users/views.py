@@ -10,13 +10,13 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from users.models import CustomUser
-from users.utils import get_random_code, get_tokens_for_user
+from users.utils import get_random_code, get_tokens_for_user, send_mail_to_user
 
 from api.permissions import IsAdmin
 from .serializers import CustomUserSerializer, SafeCustomUserSerializer, MyTokenObtainPairSerializer
-from .utils import send_mail_to_user
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth import get_user_model
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -57,11 +57,12 @@ class RegisterView(APIView):
         email = request.data.get('email')
         check = CustomUser.objects.filter(email=email).exists()
         if not check:
-            CustomUser.objects.create_user(email=email)
-        user = CustomUser.objects.filter(email=email)
+            confirmation_code = get_random_code(10)
+            CustomUser.objects.create_user(email=email, confirmation_code=confirmation_code)
+        user = CustomUser.objects.get(email=email)
         confirmation_code = user.confirmation_code
         send_mail_to_user(email, confirmation_code)
-        return Response({'email': email, 'confirmation_code': confirmation_code})
+        return Response({"email": email, "confirmation_code": confirmation_code})
 
 
 class TokenView(APIView):
