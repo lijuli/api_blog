@@ -2,6 +2,7 @@ import random
 import string
 from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import timedelta
 
 
 def get_random_code(length):
@@ -22,6 +23,8 @@ def send_mail_to_user(email, confirmation_code):
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
+    access_token = refresh.access_token
+    access_token.set_exp(lifetime=timedelta(days=30))
 
     return {
         #'refresh': str(refresh),
