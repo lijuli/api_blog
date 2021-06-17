@@ -53,7 +53,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        # fields = '__all__'
         model = Genre
         fields = (
             'name',
@@ -62,17 +61,22 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # author = serializers.SlugRelatedField(
-    #     read_only=True,
-    #     slug_field='username',
-    #     # default=serializers.CurrentUserDefault()
-    # )
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+    )
 
     class Meta:
-        fields = '__all__'
-        read_only_fields = ('title',)
+        exclude = ('title',)
         model = Review
 
+    def validate(self, data):
+        title_id = self.context["title_id"]
+        if Review.objects.filter(title_id=title_id,
+                                 author=self.context["request"].user).exists():
+            raise serializers.ValidationError(
+                "This user has already added review for this title")
+        return data
 
 # class CommentSerializer(serializers.ModelSerializer):
 #     author = serializers.SlugRelatedField(
