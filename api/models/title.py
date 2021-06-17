@@ -15,8 +15,6 @@ class Title(models.Model):
         'title year published',
         help_text='enter the title year published'
     )
-    # TODO: Implement as avg of scores from reviews
-    rating = models.FloatField()
     description = models.TextField(
         'title description',
         help_text='enter information about the title'
@@ -30,11 +28,9 @@ class Title(models.Model):
         verbose_name='category',
         help_text='select a category'
     )
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
         Genre,
-        models.SET_NULL,
         blank=True,
-        null=True,
         related_name='titles',
         verbose_name='genre',
         help_text='select a genre'
@@ -43,9 +39,7 @@ class Title(models.Model):
     class Meta:
         app_label = 'api'
         verbose_name = 'titles'
-        ordering = ('-rating',)
 
     def __str__(self):
         shorten_comment_text = shorten(self.name, width=10, placeholder='...')
         return f'[{self.category}] {self.year}: {shorten_comment_text}'
-
