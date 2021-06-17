@@ -32,6 +32,12 @@ class TitleSerializer(serializers.ModelSerializer):
         )
         model = Title
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['category'] = CategorySerializer(instance.category).data
+        response['genre'] = GenreSerializer(instance.genre, many=True).data
+        return response
+
     def get_rating(self, obj):
         return obj.review.all().aggregate(Avg('score')).get('score__avg')
 
@@ -39,13 +45,20 @@ class TitleSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = (
+            'name',
+            'slug',
+        )
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = '__all__'
+        # fields = '__all__'
         model = Genre
+        fields = (
+            'name',
+            'slug',
+        )
 
 
 class ReviewSerializer(serializers.ModelSerializer):
