@@ -1,24 +1,30 @@
-from django_filters import rest_framework, FilterSet
+from django_filters import rest_framework as filters
 from api.models.title import Title
 
 
-class GenreFilterSet(FilterSet):
-    genre = rest_framework.CharFilter(
+class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
+    pass
+
+
+class TitleFilter(filters.FilterSet):
+    genre = CharFilterInFilter(
         field_name='genre__slug',
+        lookup_expr='in'
     )
-    category = rest_framework.CharFilter(
+    category = CharFilterInFilter(
         field_name='category__slug',
+        lookup_expr='in'
     )
 
-    name = rest_framework.CharFilter(
-        name='name',
+    name = filters.CharFilter(
+        field_name='name',
         lookup_expr='icontains'
     )
 
-    year = rest_framework.NumberFilter(
+    year = filters.NumberFilter(
         field_name='year'
     )
 
     class Meta:
         model = Title
-        fields = ['genre', 'category', 'name', 'year',]
+        fields = ['genre', 'category', 'year', 'name']

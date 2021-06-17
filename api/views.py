@@ -15,7 +15,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from api.permissions import IsAdminOrReadOnly
-from api.filters import GenreFilterSet
+from api.filters import TitleFilter
 
 
 class CustomViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -28,10 +28,8 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     # permission_classes = [IsAdminOrReadOnly]
-    # filterset_fields = ['category', 'genre', 'name', 'year']
-    filter_backends = [filters.SearchFilter]
-    # search_fields = ['name', 'genre']
-    filter_class = GenreFilterSet
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = TitleFilter
     pagination_class = PageNumberPagination
 
 
