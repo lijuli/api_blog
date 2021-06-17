@@ -13,7 +13,8 @@ from api.serializers import CategorySerializer
 from api.serializers import GenreSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+                                        IsAuthenticatedOrReadOnly,
+                                        DjangoModelPermissionsOrAnonReadOnly)
 from api.permissions import IsAdminOrReadOnly
 from api.filters import TitleFilter
 
@@ -48,22 +49,29 @@ class GenreViewSet(CustomViewSet):
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
     # permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = (IsAuthenticatedOrReadOnly,
+    #  DjangoModelPermissionsOrAnonReadOnly,)
     lookup_field = 'slug'
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        return Review.objects.filter(title=self.kwargs['title_id'])
+        title_id = get_object_or_404(Title, id=self.kwargs['title_id'])
+        return Review.objects.filter(title=title_id)
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs['title_id'])
-        # serializer.save(author=self.request.user, title=title)
-        serializer.save(title=title)
+        serializer.save(author=self.request.user, title=title)
+
+    def get_serializer_context(self):
+        return {'title_id': self.kwargs['title_id'],
+                'request': self.request}
 
 # class CommentViewSet(viewsets.ModelViewSet):
 #     serializer_class = CommentSerializer
