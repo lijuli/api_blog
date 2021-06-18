@@ -25,7 +25,10 @@ class Review(models.Model):
         related_name='review',
         verbose_name='author'
     )
-    score = models.FloatField()
+    score = models.IntegerField(
+        'review score',
+        help_text='enter your review score'
+    )
     pub_date = models.DateTimeField(
         'date published',
         auto_now_add=True
