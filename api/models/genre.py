@@ -15,6 +15,7 @@ class Genre(models.Model):
 
     class Meta:
         app_label = 'api'
+        ordering = ('-pk',)
 
     def __str__(self):
         return self.name

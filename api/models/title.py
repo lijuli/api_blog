@@ -13,10 +13,14 @@ class Title(models.Model):
     )
     year = models.IntegerField(
         'title year published',
+        blank=True,
+        null=True,
         help_text='enter the title year published'
     )
     description = models.TextField(
         'title description',
+        blank=True,
+        null=True,
         help_text='enter information about the title'
     )
     category = models.ForeignKey(
@@ -39,6 +43,7 @@ class Title(models.Model):
     class Meta:
         app_label = 'api'
         verbose_name = 'titles'
+        ordering = ('-pk',)
 
     def __str__(self):
         shorten_comment_text = shorten(self.name, width=10, placeholder='...')
