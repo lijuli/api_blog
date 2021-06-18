@@ -19,14 +19,17 @@ from .serializers import CustomUserSerializer, SafeCustomUserSerializer, MyToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
+from rest_framework.pagination import PageNumberPagination
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    lookup_field = 'username'
     permission_classes = [IsAdmin]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['username', ]
+    pagination_class = PageNumberPagination
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['username', ]
 
     @action(detail=False, permission_classes=(IsAuthenticated,),
             methods=['get', 'patch'], url_path='me')
