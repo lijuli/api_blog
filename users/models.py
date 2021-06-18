@@ -41,7 +41,7 @@ class CustomUserManager(BaseUserManager):
             role=CHOICES[2][1],
         )
         user.staff = True
-        user.admin = True
+        user.superuser = True
         user.save(using=self._db)
         return user
 
@@ -50,6 +50,7 @@ class CustomUser(AbstractUser):
     username = models.CharField(
         max_length=20, unique=True, blank=False, null=False
     )
+    password = models.CharField(max_length=128, blank=True, null=True)
     bio = models.TextField(
         max_length=1000, null=True, blank=True, verbose_name='Рассказ о себе'
     )
@@ -76,12 +77,12 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ('email', )
 
     @property
-    def is_admin(self):
-        return self.role == 'moderator'
+    def is_superuser(self):
+        return self.role == 'admin'
 
     @property
     def is_staff(self):
-        return self.role == 'admin'
+        return self.role == 'moderator'
 
 
 # class CustomUserManager(BaseUserManager):
