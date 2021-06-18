@@ -3,11 +3,16 @@ from django.db import models
 
 from .utils import get_random_code
 
-CHOICES = (
-    ('USER', 'user'),
-    ('MODERATOR', 'moderator'),
-    ('ADMIN', 'admin'),
-)
+class CHOICES(models.TextChoices):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+
+# CHOICES = (
+#     ('USER', 'user'),
+#     ('MODERATOR', 'moderator'),
+#     ('ADMIN', 'admin'),
+# )
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **kwargs):
@@ -27,7 +32,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password,
             username=username,
-            role=CHOICES[1][1],
+            role=CHOICES.MODERATOR,
         )
         user.staff = True
         user.save(using=self._db)
@@ -38,7 +43,7 @@ class CustomUserManager(BaseUserManager):
             username=username,
             email=email,
             password=password,
-            role=CHOICES[2][1],
+            role=CHOICES.ADMIN,
         )
         user.staff = True
         user.superuser = True
@@ -56,8 +61,8 @@ class CustomUser(AbstractUser):
     )
     role = models.CharField(
         max_length=15,
-        choices=CHOICES,
-        default='USER',
+        choices=CHOICES.choices,
+        default=CHOICES.USER,
         verbose_name='Роль',
     )
     email = models.EmailField(
@@ -78,11 +83,11 @@ class CustomUser(AbstractUser):
 
     @property
     def is_superuser(self):
-        return self.role == 'admin'
+        return self.role == CHOICES.ADMIN
 
     @property
     def is_staff(self):
-        return self.role == 'moderator'
+        return self.role == CHOICES.MODERATOR
 
 
 # class CustomUserManager(BaseUserManager):

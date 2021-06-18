@@ -29,7 +29,5 @@ def get_tokens_for_user(user):
     access_token.set_exp(lifetime=timedelta(days=30))
 
     return {
-        #'refresh': str(refresh),
         'access': str(access_token),
     }
-
