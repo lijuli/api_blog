@@ -28,7 +28,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     """A viewset for viewing and editing title instances."""
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly, IsAuthenticatedOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filter_class = TitleFilter
     pagination_class = PageNumberPagination
@@ -38,7 +38,7 @@ class CategoryViewSet(CustomViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
     lookup_field = 'slug'
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
@@ -48,7 +48,7 @@ class GenreViewSet(CustomViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
     # permission_classes = (IsAuthenticatedOrReadOnly,
     #  DjangoModelPermissionsOrAnonReadOnly,)
     lookup_field = 'slug'

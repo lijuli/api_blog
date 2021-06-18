@@ -39,10 +39,3 @@ class Comment(models.Model):
     def __str__(self):
         shorten_comment_text = shorten(self.text, width=10, placeholder='...')
         return f'[{self.pub_date}] {self.author}: {shorten_comment_text}'
-# # - id: skip
-# # - text: TextField
-# # - author: ForeignKey
-# # - pub_date: DateTimeField
-# #
-# # ------------
-# # * review ForeignKey

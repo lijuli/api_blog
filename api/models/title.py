@@ -13,10 +13,14 @@ class Title(models.Model):
     )
     year = models.IntegerField(
         'title year published',
+        blank=True,
+        null=True,
         help_text='enter the title year published'
     )
     description = models.TextField(
         'title description',
+        blank=True,
+        null=True,
         help_text='enter information about the title'
     )
     category = models.ForeignKey(
