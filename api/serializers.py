@@ -75,11 +75,15 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
 
     def validate(self, data):
-        title_id = self.context["title_id"]
-        if Review.objects.filter(title_id=title_id,
-                                 author=self.context["request"].user).exists():
-            raise serializers.ValidationError(
-                "This user has already added review for this title")
+        title_id = self.context.get('title_id')
+        current_user_review = Review.objects.filter(
+            title_id=title_id,
+            author=self.context.get('request').user
+        )
+        if (self.context.get('request').method != 'PATCH' and
+                current_user_review.exists()):
+            raise serializers.ValidationError(('This user has already added '
+                                               'review for this title'))
         return data
 
 
