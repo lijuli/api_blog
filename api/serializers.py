@@ -3,7 +3,7 @@ from api.models.review import Review
 from rest_framework import serializers
 
 from api.models.title import Title
-# from api.models.comment import Comment
+from api.models.comment import Comment
 from api.models.category import Category
 from api.models.genre import Genre
 
@@ -78,13 +78,14 @@ class ReviewSerializer(serializers.ModelSerializer):
                 "This user has already added review for this title")
         return data
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     author = serializers.SlugRelatedField(
-#         read_only=True,
-#         slug_field='username'
-#     )
-#
-#     class Meta:
-#         fields = '__all__'
-#         read_only_fields = ('review',)
-#         model = Comment
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username'
+    )
+
+    class Meta:
+        read_only_fields = ('review',)
+        exclude = ('review',)
+        model = Comment

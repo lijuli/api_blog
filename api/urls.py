@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from api.views import TitleViewSet
 from api.views import ReviewViewSet
+from api.views import CommentViewSet
 from api.views import CategoryViewSet
 from api.views import GenreViewSet
 from users.views import CustomUserViewSet, RegisterView, TokenView
@@ -12,6 +13,10 @@ router_v1.register('titles', TitleViewSet, basename='title_api')
 router_v1.register(r'titles/(?P<title_id>[0-9]+)/reviews',
                    ReviewViewSet,
                    basename='review_api')
+router_v1.register((r'titles/(?P<title_id>[0-9]+)'
+                    r'/reviews/(?P<review_id>[0-9]+)/comments'),
+                   CommentViewSet,
+                   basename='comment_api')
 router_v1.register('categories', CategoryViewSet, basename='category_api')
 router_v1.register('genres', GenreViewSet, basename='genre_api')
 router_v1.register(r'users', CustomUserViewSet, basename='user_api')
