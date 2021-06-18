@@ -2,12 +2,14 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view
+from django.db.models import Avg, Max
 
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework.decorators import action
 
 from users.models import CustomUser
 from users.utils import get_random_code, get_tokens_for_user, send_mail_to_user
@@ -26,28 +28,38 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', ]
 
-
-class APIUser(APIView):
-    def get(self, request):
-        if request.user.is_authenticated:
-            user = get_object_or_404(CustomUser, id=request.user.id)
-            serializer = CustomUserSerializer(user)
+    @action(detail=False, permission_classes=(IsAuthenticated,),
+            methods=['get', 'patch'], url_path='me')
+    def get_or_update_self(self, request):
+        if request.method != 'GET':
+            serializer = self.get_serializer(
+                instance=request.user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-    def patch(self, request):
-        user = get_object_or_404(CustomUser, id=request.user.id)
-        if request.user == user:
-            serializer = SafeCustomUserSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            serializer = self.get_serializer(request.user, many=False)
+            return Response(serializer.data)
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+
+
+# class APIUser(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         serializer = CustomUserSerializer(request.user, many=False)
+#         return Response(serializer.data)
+
+#     def patch(self, request):
+#         user = get_object_or_404(CustomUser, id=request.user.id)
+#         if request.user == user:
+#             serializer = SafeCustomUserSerializer(user, data=request.data, partial=True)
+#             if serializer.is_valid():
+#                 serializer.save()
+#                 return Response(serializer.data, status=status.HTTP_200_OK)
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+#         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterView(APIView):
@@ -57,7 +69,8 @@ class RegisterView(APIView):
         email = request.data.get('email')
         check = CustomUser.objects.filter(email=email).exists()
         if not check:
-            CustomUser.objects.create_user(email=email)
+            id = CustomUser.objects.aggregate(Max('id'))['id__max'] + 1
+            CustomUser.objects.create_user(email=email, username=f'user_{id}')
         user = CustomUser.objects.get(email=email)
         confirmation_code = user.confirmation_code
         send_mail_to_user(email, confirmation_code)
@@ -88,3 +101,6 @@ class TokenView(APIView):
 #         # token = AccessToken.for_user(user)
 #         # response = {'token': {token}}
 #         # return Response(response, status=status.HTTP_200_OK)
+
+# class MyTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = MyTokenObtainPairSerializer

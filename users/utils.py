@@ -3,6 +3,8 @@ import string
 from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import timedelta
+#from .models import CustomUser
+from django.db.models import Avg, Max
 
 
 def get_random_code(length):
@@ -30,3 +32,4 @@ def get_tokens_for_user(user):
         #'refresh': str(refresh),
         'access': str(access_token),
     }
+
