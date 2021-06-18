@@ -20,6 +20,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from rest_framework.pagination import PageNumberPagination
+#from rest_framework.permissions import IsAdmin
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):

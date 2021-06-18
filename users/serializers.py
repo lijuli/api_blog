@@ -8,6 +8,9 @@ from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, UntypedT
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    role = serializers.ChoiceField(choices=['user', 'moderator', 'admin'],)
+    #role = serializers.ChoiceField(source = 'role.get_role_display()')
+    
     class Meta:
         fields = ('__all__')
         model = CustomUser

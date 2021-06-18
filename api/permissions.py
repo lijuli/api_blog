@@ -15,7 +15,14 @@ class IsModerator(permissions.BasePermission):
     def has_permission(self, request, view):
         return (request.user.is_authenticated and request.user.is_staff)
 
-
+# class IsAdmin(permissions.BasePermission):
+#     """
+#     Allows access only to users with 'admin' role.
+#     """
+#     def has_permission(self, request, view):
+#         if not request.user.is_anonymous:
+#             return request.user.role == 'admin'
+#         return False
 class IsAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
