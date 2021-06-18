@@ -65,6 +65,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username',
     )
+    score = serializers.IntegerField(
+        min_value=1,
+        max_value=10,
+    )
 
     class Meta:
         exclude = ('title',)
