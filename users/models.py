@@ -8,11 +8,6 @@ class CHOICES(models.TextChoices):
     MODERATOR = 'moderator'
     ADMIN = 'admin'
 
-# CHOICES = (
-#     ('USER', 'user'),
-#     ('MODERATOR', 'moderator'),
-#     ('ADMIN', 'admin'),
-# )
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **kwargs):
@@ -75,6 +70,8 @@ class CustomUser(AbstractUser):
         default=get_random_code(10),
         verbose_name='Код подтверждения',
     )
+    
+    is_active = True
 
     objects = CustomUserManager()
 
