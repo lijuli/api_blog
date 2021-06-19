@@ -64,6 +64,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username',
+        default=serializers.CurrentUserDefault()
     )
     score = serializers.IntegerField(
         min_value=1,
@@ -75,22 +76,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
 
     def validate(self, data):
-        title_id = self.context.get('title_id')
         current_user_review = Review.objects.filter(
-            title_id=title_id,
+            title_id=self.context.get('title_id'),
             author=self.context.get('request').user
         )
         if (self.context.get('request').method != 'PATCH' and
                 current_user_review.exists()):
             raise serializers.ValidationError(('This user has already added '
-                                               'review for this title'))
+                                               'review for this title.'))
         return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
-        slug_field='username'
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
     )
 
     class Meta:

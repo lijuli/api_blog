@@ -1,5 +1,6 @@
 from textwrap import shorten
 from django.db import models
+from django.conf import settings
 
 from api.models.title import Title
 from users.models import CustomUser
@@ -21,7 +22,9 @@ class Review(models.Model):
     )
     author = models.ForeignKey(
         CustomUser,
+        # settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        # settings=settings.AUTH_USER_MODEL,
         related_name='review',
         verbose_name='author'
     )
@@ -39,9 +42,9 @@ class Review(models.Model):
         verbose_name = 'titles'
         ordering = ('-pub_date',)
 
-    def __str__(self):
-        shorten_comment_text = shorten(self.text, width=10, placeholder='...')
-        return f'[{self.pub_date}] {self.author}: {shorten_comment_text}'
+    # def __str__(self):
+    #     shorten_comment_text = shorten(self.text, width=10, placeholder='...')
+    #     return f'[{self.pub_date}] {self.author}: {shorten_comment_text}'
 
 # - id skip
 # - text: TextField
