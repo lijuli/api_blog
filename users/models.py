@@ -75,8 +75,11 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ('email', )
+
+    ordering = ('-pk',)
 
     @property
     def is_superuser(self):
@@ -85,6 +88,13 @@ class CustomUser(AbstractUser):
     @property
     def is_staff(self):
         return self.role == CHOICES.MODERATOR
+
+    class Meta(AbstractUser.Meta):
+        db_table = 'users_customuser'
+        app_label = 'users'
+        verbose_name = 'customuser'
+        ordering = ('-pk',)
+
 
 
 # class CustomUserManager(BaseUserManager):
