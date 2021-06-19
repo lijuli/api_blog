@@ -15,14 +15,14 @@ class IsModerator(permissions.BasePermission):
     def has_permission(self, request, view):
         return (request.user.is_authenticated and request.user.is_staff)
 
-# class IsAdmin(permissions.BasePermission):
-#     """
-#     Allows access only to users with 'admin' role.
-#     """
-#     def has_permission(self, request, view):
-#         if not request.user.is_anonymous:
-#             return request.user.role == 'admin'
-#         return False
+
+class IsModeratorOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.method in
+            permissions.SAFE_METHODS or request.user.is_staff
+        )
+
 class IsAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
@@ -32,4 +32,14 @@ class IsAdmin(permissions.BasePermission):
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return(request.method in permissions.SAFE_METHODS
-               or request.user.is_staff)
+               or request.user.is_superuser)
+
+
+class ReviewPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.method in permissions.SAFE_METHODS or
+            request.user.is_authenticated or
+            request.user.is_superuser or
+            request.user.is_staff
+        )
