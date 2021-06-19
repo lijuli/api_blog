@@ -6,11 +6,11 @@ from api.models.comment import Comment
 from api.models.review import Review
 from api.models.category import Category
 from api.models.genre import Genre
+from api.permissions import AuthorCanDelete
 from api.permissions import IsAdmin
 from api.permissions import IsAuthorOrReadOnly
 from api.permissions import IsModerator
 from api.permissions import IsModeratorOrReadOnly
-from api.permissions import ReviewPermission
 from api.serializers import TitleSerializer
 from api.serializers import CommentSerializer
 from api.serializers import ReviewSerializer
@@ -66,8 +66,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
     permission_classes = [
-        ReviewPermission,
-        IsAuthorOrReadOnly
+        IsAuthorOrReadOnly,
+        IsAuthenticatedOrReadOnly
     ]
 
     def get_queryset(self):
@@ -87,8 +87,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [
-        ReviewPermission,
-        IsAuthorOrReadOnly
+        IsAuthorOrReadOnly,
+        IsAuthenticatedOrReadOnly
     ]
     pagination_class = PageNumberPagination
 
