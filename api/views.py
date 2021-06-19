@@ -1,27 +1,19 @@
-from django_filters.rest_framework import DjangoFilterBackend, ModelChoiceFilter, FilterSet
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, filters, viewsets
-from api.models.title import Title
-from api.models.comment import Comment
-from api.models.review import Review
-from api.models.category import Category
-from api.models.genre import Genre
-from api.permissions import AuthorCanDelete
-from api.permissions import IsAdmin
-from api.permissions import IsAuthorOrReadOnly
-from api.permissions import IsModerator
-from api.permissions import IsModeratorOrReadOnly
-from api.serializers import TitleSerializer
-from api.serializers import CommentSerializer
-from api.serializers import ReviewSerializer
-from api.serializers import CategorySerializer
-from api.serializers import GenreSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly,
-                                        DjangoModelPermissionsOrAnonReadOnly)
-from api.permissions import IsAdminOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 from api.filters import TitleFilter
+from api.models.category import Category
+from api.models.comment import Comment
+from api.models.genre import Genre
+from api.models.review import Review
+from api.models.title import Title
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             TitleSerializer)
 
 
 class CustomViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -54,15 +46,12 @@ class GenreViewSet(CustomViewSet):
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
     permission_classes = [IsAdminOrReadOnly]
-    # permission_classes = (IsAuthenticatedOrReadOnly,
-    #  DjangoModelPermissionsOrAnonReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
     permission_classes = [
@@ -96,6 +85,5 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Comment.objects.filter(review=self.kwargs.get('review_id'))
 
     def perform_create(self, serializer):
-        # if self.request.user.is_authenticated:
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         serializer.save(author=self.request.user, review=review)

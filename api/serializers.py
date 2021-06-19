@@ -1,11 +1,11 @@
 from django.db.models import Avg
-from api.models.review import Review
 from rest_framework import serializers
 
-from api.models.title import Title
-from api.models.comment import Comment
 from api.models.category import Category
+from api.models.comment import Comment
 from api.models.genre import Genre
+from api.models.review import Review
+from api.models.title import Title
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -80,8 +80,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             title_id=self.context.get('title_id'),
             author=self.context.get('request').user
         )
-        if (self.context.get('request').method != 'PATCH' and
-                current_user_review.exists()):
+        if (self.context.get('request').method != 'PATCH'
+                and current_user_review.exists()):
             raise serializers.ValidationError(('This user has already added '
                                                'review for this title.'))
         return data
