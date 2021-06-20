@@ -1,4 +1,3 @@
-from textwrap import shorten
 from django.db import models
 
 from api.models.review import Review
@@ -34,8 +33,3 @@ class Comment(models.Model):
         app_label = 'api'
         verbose_name = 'comments'
         ordering = ('-pub_date',)
-
-    # TODO: create a separate method for this shortening
-    # def __str__(self):
-    #     shorten_comment_text = shorten(self.text, width=10, placeholder='...')
-    #     return f'[{self.pub_date}] {self.author}: {shorten_comment_text}'
