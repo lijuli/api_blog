@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
@@ -13,7 +14,7 @@ from api.models.title import Title
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
-                             TitleSerializer)
+                             TitleReadSerializer, TitleWriteSerializer)
 
 
 class CustomViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -24,11 +25,19 @@ class CustomViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
 class TitleViewSet(viewsets.ModelViewSet):
     """A viewset for viewing and editing title instances."""
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return TitleReadSerializer
+        return TitleWriteSerializer
+    #
+    # def get_queryset(self):
+    #     # return Title.reviews.all().aggregate(Avg('score')).get('score__avg')
+    #     return Title.reviews.all().aggregate(Avg('score')).get('score__avg')
 
 
 class CategoryViewSet(CustomViewSet):
@@ -60,8 +69,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
-        title_id = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        return Review.objects.filter(title=title_id)
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
