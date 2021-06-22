@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -117,3 +118,11 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+ADMIN_EMAIL = "yamdb@gmail.com"
+
+SUBJECT = 'Регистрация на Yamdb'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30)
+}

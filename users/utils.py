@@ -1,22 +1,13 @@
-import random
-import string
-from datetime import timedelta
-
 from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
-def get_random_code(length):
-    letters = string.ascii_lowercase
-    result_str = ''.join(random.choice(letters) for i in range(length))
-    return result_str
+from api_yamdb.settings import ADMIN_EMAIL, SUBJECT
 
 
 def send_mail_to_user(email, confirmation_code):
     send_mail(
-        subject='Регистрация на Yamdb',
+        subject=SUBJECT,
         message=f'Код подтверждения: {confirmation_code}',
-        from_email='yamdb@gmail.com',
+        from_email=ADMIN_EMAIL,
         recipient_list=[email],
         fail_silently=False,
     )
@@ -25,7 +16,6 @@ def send_mail_to_user(email, confirmation_code):
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     access_token = refresh.access_token
-    access_token.set_exp(lifetime=timedelta(days=30))
 
     return {
         'access': str(access_token),

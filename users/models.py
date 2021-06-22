@@ -1,10 +1,10 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-from .utils import get_random_code
 
-
-class CHOICES(models.TextChoices):
+class Roles(models.TextChoices):
     USER = 'user'
     MODERATOR = 'moderator'
     ADMIN = 'admin'
@@ -28,7 +28,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password,
             username=username,
-            role=CHOICES.MODERATOR,
+            role=Roles.MODERATOR,
         )
         user.staff = True
         user.save(using=self._db)
@@ -39,7 +39,7 @@ class CustomUserManager(BaseUserManager):
             username=username,
             email=email,
             password=password,
-            role=CHOICES.ADMIN,
+            role=Roles.ADMIN,
         )
         user.staff = True
         user.superuser = True
@@ -57,20 +57,14 @@ class CustomUser(AbstractUser):
     )
     role = models.CharField(
         max_length=15,
-        choices=CHOICES.choices,
-        default=CHOICES.USER,
+        choices=Roles.choices,
+        default=Roles.USER,
         verbose_name='Роль',
     )
     email = models.EmailField(
         max_length=255, unique=True, blank=False, null=False
     )
-    confirmation_code = models.CharField(
-        max_length=10,
-        null=True,
-        blank=True,
-        default=get_random_code(10),
-        verbose_name='Код подтверждения',
-    )
+    confirmation_code = models.UUIDField(default=uuid.uuid4, editable=False)
 
     is_active = True
 
@@ -83,11 +77,11 @@ class CustomUser(AbstractUser):
 
     @property
     def is_superuser(self):
-        return self.role == CHOICES.ADMIN
+        return self.role == Roles.ADMIN
 
     @property
     def is_staff(self):
-        return self.role == CHOICES.MODERATOR
+        return self.role == Roles.MODERATOR
 
     class Meta(AbstractUser.Meta):
         db_table = 'users_customuser'

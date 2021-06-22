@@ -16,7 +16,7 @@ router_v1.register((r'titles/(?P<title_id>[0-9]+)'
                    basename='comment_api')
 router_v1.register('categories', CategoryViewSet, basename='category_api')
 router_v1.register('genres', GenreViewSet, basename='genre_api')
-router_v1.register(r'users', CustomUserViewSet, basename='user_api')
+router_v1.register('users', CustomUserViewSet, basename='user_api')
 
 urlpatterns = [
     path('v1/', include(router_v1.urls)),
