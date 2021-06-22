@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from api_yamdb.settings import ADMIN_EMAIL, SUBJECT
 
 
@@ -16,7 +17,6 @@ def send_mail_to_user(email, confirmation_code):
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     access_token = refresh.access_token
-
     return {
         'access': str(access_token),
     }
