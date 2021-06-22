@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsAdmin
+from api.permissions import IsAdminAndAuthenticated
 from users.models import CustomUser
 from users.utils import get_tokens_for_user, send_mail_to_user
 
@@ -18,7 +18,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = 'username'
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdminAndAuthenticated]
     pagination_class = PageNumberPagination
 
     @action(detail=False, permission_classes=(IsAuthenticated,),
