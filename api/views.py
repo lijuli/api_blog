@@ -23,50 +23,53 @@ class CustomViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """A viewset for viewing and editing title instances."""
-    queryset = Title.objects.all()
-    permission_classes = [IsAdminOrReadOnly]
+    """A ViewSet for viewing and editing Title instances."""
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     pagination_class = PageNumberPagination
 
+    def get_queryset(self):
+        return Title.objects.annotate(
+            rating=Avg('reviews__score')
+        ).order_by('-pk')
+
     def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ('list', 'retrieve'):
             return TitleReadSerializer
         return TitleWriteSerializer
-    #
-    # def get_queryset(self):
-    #     # return Title.reviews.all().aggregate(Avg('score')).get('score__avg')
-    #     return Title.reviews.all().aggregate(Avg('score')).get('score__avg')
 
 
 class CategoryViewSet(CustomViewSet):
+    """A ViewSet for viewing and editing Category instances."""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
 class GenreViewSet(CustomViewSet):
+    """A ViewSet for viewing and editing Genre instances."""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    """A ViewSet for viewing and editing Review instances."""
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [
+    permission_classes = (
         IsAuthorOrReadOnly,
         IsAuthenticatedOrReadOnly
-    ]
+    )
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
@@ -83,15 +86,20 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """A ViewSet for viewing and editing Comment instances."""
     serializer_class = CommentSerializer
-    permission_classes = [
+    permission_classes = (
         IsAuthorOrReadOnly,
         IsAuthenticatedOrReadOnly
-    ]
+    )
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        return Comment.objects.filter(review=self.kwargs.get('review_id'))
+        queryset = Comment.objects.all()
+        review = self.kwargs.get('review_id')
+        if review is not None:
+            queryset = Comment.objects.filter(review=review)
+        return queryset
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))

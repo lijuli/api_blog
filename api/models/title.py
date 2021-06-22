@@ -54,7 +54,6 @@ class Title(models.Model):
         verbose_name = 'titles'
         ordering = ('-pk',)
 
-
     def __str__(self):
         shorten_title_text = shorten(self.name, width=10, placeholder='...')
         return f'[{self.category}] {self.year}: {shorten_title_text}'
