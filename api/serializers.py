@@ -52,12 +52,6 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Title
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['category'] = CategorySerializer(instance.category).data
-        response['genre'] = GenreSerializer(instance.genre, many=True).data
-        return response
-
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
