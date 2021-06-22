@@ -1,3 +1,4 @@
+from textwrap import shorten
 from django.db import models
 
 from api.models.review import Review
@@ -7,8 +8,6 @@ from users.models import CustomUser
 class Comment(models.Model):
     review = models.ForeignKey(
         Review,
-        blank=True,
-        null=True,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='review',
@@ -26,10 +25,15 @@ class Comment(models.Model):
     )
     pub_date = models.DateTimeField(
         'date published',
-        auto_now_add=True
+        auto_now_add=True,
+        db_index=True
     )
 
     class Meta:
         app_label = 'api'
         verbose_name = 'comments'
         ordering = ('-pub_date',)
+
+    def __str__(self):
+        shorten_comment_text = shorten(self.name, width=10, placeholder='...')
+        return f'[{self.category}] {self.year}: {shorten_comment_text}'
