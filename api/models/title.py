@@ -1,19 +1,12 @@
-import datetime
 from textwrap import shorten
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from api.models.category import Category
 from api.models.genre import Genre
+from api.validators import validate_year
 
 
 class Title(models.Model):
-    def validate_year(year):
-        if year > datetime.datetime.now().year:
-            raise ValidationError(
-                'Select past or current year.The future is yet to come.'
-            )
-
     name = models.CharField(
         'title name',
         max_length=200,

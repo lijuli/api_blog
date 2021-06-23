@@ -97,7 +97,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Comment.objects.all()
         review = self.kwargs.get('review_id')
-        if review is not None:
+        if Review.objects.filter(id=review).exists():
             queryset = Comment.objects.filter(review=review)
         return queryset
 
