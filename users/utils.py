@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api_yamdb.settings import ADMIN_EMAIL, SUBJECT
 
 
-def send_mail_to_user(email, confirmation_code):
+def send_email_to_user(email, confirmation_code):
     send_mail(
         subject=SUBJECT,
         message=f'Код подтверждения: {confirmation_code}',

@@ -1,4 +1,3 @@
-from django.db.models import Max
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -9,7 +8,7 @@ from rest_framework.views import APIView
 
 from api.permissions import IsAdminAndAuthenticated
 from users.models import CustomUser
-from users.utils import get_tokens_for_user, send_mail_to_user
+from users.utils import get_tokens_for_user, send_email_to_user
 
 from .serializers import (CustomUserSerializer, RegisterSerializer,
                           TokenSerializer)
@@ -45,22 +44,9 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid()
         email = serializer.validated_data['email']
-        registered_user = CustomUser.objects.filter(email=email)
-        if not registered_user.exists():
-            unique_number = CustomUser.objects.aggregate(
-                Max('id')
-            )['id__max'] + 1
-            registered_user = CustomUser.objects.create_user(
-                email=email,
-                username=f'user_{unique_number}'
-            )
-            confirmation_code = registered_user.confirmation_code
-            send_mail_to_user(email, confirmation_code)
-            return Response(
-                {"email": email, "confirmation_code": confirmation_code}
-            )
-        confirmation_code = registered_user[0].confirmation_code
-        send_mail_to_user(email, confirmation_code)
+        user = CustomUser.objects.get_or_create(email=email)
+        confirmation_code = user[0].confirmation_code
+        send_email_to_user(email, confirmation_code)
         return Response(
             {"email": email, "confirmation_code": confirmation_code}
         )

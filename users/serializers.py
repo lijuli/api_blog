@@ -7,15 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=Roles.values)
 
     class Meta:
-        fields = ('__all__')
-        model = CustomUser
-
-
-class SafeCustomUserSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(read_only=True)
-
-    class Meta:
-        fields = ('__all__')
+        fields = '__all__'
         model = CustomUser
 
 

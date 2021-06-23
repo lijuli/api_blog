@@ -49,7 +49,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = models.CharField(
-        max_length=20, unique=True, blank=False, null=False
+        max_length=20, unique=True, blank=True, null=True
     )
     password = models.CharField(max_length=128, blank=True, null=True)
     bio = models.TextField(
