@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,12 +18,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
-    'users',
+    'drf_yasg',
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
-
+    'users',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
     'DEFAULT_PAGINATION_CLASS': [
-        'rest_framework.pagination.LimitOffsetPagination',
+        'rest_framework.pagination.PageNumberPagination',
     ],
     'PAGE_SIZE': 10,
 }
@@ -117,3 +118,11 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+ADMIN_EMAIL = "yamdb@gmail.com"
+
+SUBJECT = 'Регистрация на Yamdb'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30)
+}

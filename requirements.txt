@@ -31,3 +31,5 @@ zipp==3.1.0               # via importlib-metadata
 djangorestframework-simplejwt==4.7.1
 django-filter==2.4.0
 isort==5.8.0 # for sorting imports alphabetically, and automatically separated into sections and by type
+drf-yasg==1.20.0
+uuid==1.30

@@ -3,6 +3,7 @@ from django.db import models
 
 from api.models.category import Category
 from api.models.genre import Genre
+from api.validators import validate_year
 
 
 class Title(models.Model):
@@ -13,12 +14,15 @@ class Title(models.Model):
     )
     year = models.IntegerField(
         'title year published',
+        blank=True,
+        null=True,
+        validators=[validate_year],
         help_text='enter the title year published'
     )
-    # TODO: Implement as avg of scores from reviews
-    rating = models.FloatField()
     description = models.TextField(
         'title description',
+        blank=True,
+        null=True,
         help_text='enter information about the title'
     )
     category = models.ForeignKey(
@@ -30,11 +34,9 @@ class Title(models.Model):
         verbose_name='category',
         help_text='select a category'
     )
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
         Genre,
-        models.SET_NULL,
         blank=True,
-        null=True,
         related_name='titles',
         verbose_name='genre',
         help_text='select a genre'
@@ -43,9 +45,8 @@ class Title(models.Model):
     class Meta:
         app_label = 'api'
         verbose_name = 'titles'
-        ordering = ('-rating',)
+        ordering = ('-pk',)
 
     def __str__(self):
-        shorten_comment_text = shorten(self.name, width=10, placeholder='...')
-        return f'[{self.category}] {self.year}: {shorten_comment_text}'
-
+        shorten_title_text = shorten(self.name, width=10, placeholder='...')
+        return f'[{self.category}] {self.year}: {shorten_title_text}'
