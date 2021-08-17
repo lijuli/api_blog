@@ -7,7 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=Roles.values)
 
     class Meta:
-        fields = '__all__'
+        exclude = ('is_active',)
         model = CustomUser
 
 

@@ -8,6 +8,7 @@ from rest_framework import permissions
 
 urlpatterns = [
     path('api/', include('api.urls')),
+    path('api/', include('users.urls')),
     path('admin/', admin.site.urls),
     path(
         'redoc/',
@@ -28,9 +29,9 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-urlpatterns += [
-    url(r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0),
-        name='schema-swagger-ui'),
-]
+# urlpatterns += [
+#     url(r'^swagger(?P<format>\.json|\.yaml)$',
+#         schema_view.without_ui(cache_timeout=0), name='schema-json'),
+#     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0),
+#         name='schema-swagger-ui'),
+# ]

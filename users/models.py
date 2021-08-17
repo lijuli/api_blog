@@ -66,8 +66,6 @@ class CustomUser(AbstractUser):
     )
     confirmation_code = models.UUIDField(default=uuid.uuid4, editable=False)
 
-    is_active = True
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'

@@ -42,7 +42,7 @@ class RegisterView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         user = CustomUser.objects.get_or_create(email=email)
         confirmation_code = user[0].confirmation_code
@@ -57,7 +57,7 @@ class TokenView(APIView):
 
     def post(self, request):
         serializer = TokenSerializer(data=request.data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         confirmation_code = serializer.validated_data['confirmation_code']
         user = get_object_or_404(CustomUser, email=email)
