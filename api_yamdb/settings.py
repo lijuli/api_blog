@@ -1,5 +1,8 @@
 import os
 from datetime import timedelta
+# import environ
+# env = environ.Env()
+# environ.Env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,6 +62,15 @@ WSGI_APPLICATION = 'api_yamdb.wsgi.application'
 
 
 DATABASES = {
+    # 'default': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': 'api_yamdb',
+    #         'USER': 'api_yamdb_user',
+    #         'PASSWORD': 'gunicorn256me',
+    #         'HOST': 'localhost',
+    #         'PORT': '5432',
+    #     }
+    # 'default': env.db(),
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
@@ -94,8 +106,8 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 AUTH_USER_MODEL = 'users.CustomUser'
 

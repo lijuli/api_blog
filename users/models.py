@@ -28,9 +28,9 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password,
             username=username,
-            role=Roles.MODERATOR,
         )
         user.staff = True
+        user.role = Roles.MODERATOR
         user.save(using=self._db)
         return user
 
@@ -39,32 +39,54 @@ class CustomUserManager(BaseUserManager):
             username=username,
             email=email,
             password=password,
-            role=Roles.ADMIN,
         )
         user.staff = True
         user.superuser = True
+        user.role = Roles.ADMIN
         user.save(using=self._db)
         return user
 
 
 class CustomUser(AbstractUser):
     username = models.CharField(
-        max_length=20, unique=True, blank=True, null=True
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True
     )
-    password = models.CharField(max_length=128, blank=True, null=True)
+    password = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True
+    )
     bio = models.TextField(
-        max_length=1000, null=True, blank=True, verbose_name='Рассказ о себе'
+        max_length=1000,
+        null=True,
+        blank=True,
+        verbose_name='About'
     )
     role = models.CharField(
         max_length=15,
         choices=Roles.choices,
         default=Roles.USER,
-        verbose_name='Роль',
+        verbose_name='Role',
     )
     email = models.EmailField(
-        max_length=255, unique=True, blank=False, null=False
+        max_length=255,
+        unique=True,
+        blank=False,
+        null=False
     )
-    confirmation_code = models.UUIDField(default=uuid.uuid4, editable=False)
+    confirmation_code = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False
+    )
+    date_joined = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    staff = models.BooleanField(default=False)
+    superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -73,13 +95,19 @@ class CustomUser(AbstractUser):
 
     ordering = ('-pk',)
 
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
     @property
     def is_superuser(self):
-        return self.role == Roles.ADMIN
+        return self.role == Roles.ADMIN or self.superuser
 
     @property
     def is_staff(self):
-        return self.role == Roles.MODERATOR
+        return self.role == Roles.MODERATOR or self.staff
 
     class Meta(AbstractUser.Meta):
         db_table = 'users_customuser'

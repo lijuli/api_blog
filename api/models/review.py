@@ -26,10 +26,10 @@ class Review(models.Model):
     )
     score = models.PositiveSmallIntegerField(
         'review score',
-        validators=[
-            MinValueValidator('Review score cannot be less than 1.', 1),
-            MaxValueValidator('Review score cannot be greater than 10.', 10)
-        ],
+        # validators=[
+        #     MinValueValidator('Review score cannot be less than 1.', 1),
+        #     MaxValueValidator('Review score cannot be greater than 10.', 10)
+        # ],
         help_text='enter your review score'
     )
     pub_date = models.DateTimeField(
