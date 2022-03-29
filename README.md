@@ -1,4 +1,4 @@
-Welcome to the api_yamdb wiki!
+Welcome to the blog wiki!
 
 ### Usage
 
